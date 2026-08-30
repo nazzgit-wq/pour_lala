@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#FBEAEE" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Pour Aéla" />
+<title>Rien que pour toi Lala 🎁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #FBF6EF;
+    --peach: #FDE2E4;
+    --lavender: #E6E0F8;
+    --mint: #DDF3EA;
+    --ink: #3A2E33;
+    --ink-soft: #8A7A80;
+    --coral: #FF8FA3;
+    --coral-deep: #E8637C;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    background: linear-gradient(160deg, var(--cream) 0%, var(--peach) 45%, var(--lavender) 100%);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 24px;
+    position: relative;
+    background-image: linear-gradient(160deg, rgba(251,246,239,0.55) 0%, rgba(253,226,228,0.55) 45%, rgba(230,224,248,0.55) 100%);
+  }
+
+  .fleur-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 70px);
+    justify-content: center;
+    gap: 26px 34px;
+    padding: 24px;
+    pointer-events: none;
+  }
+  .fleur-bg svg {
+    width: 34px;
+    height: 34px;
+    fill: var(--coral-deep);
+    opacity: 0.16;
+  }
+
+  .back-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 50;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(4px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px -4px rgba(90,60,70,0.25);
+  }
+
+  .page-eyebrow {
+    position: relative;
+    z-index: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral-deep);
+    margin: 0 0 6px;
+    text-align: center;
+  }
+  .page-title {
+    position: relative;
+    z-index: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 34px;
+    text-align: center;
+  }
+
+  /* grande enveloppe */
+  .envelope-zone {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .envelope {
+    position: relative;
+    width: min(88vw, 380px);
+    aspect-ratio: 3 / 2;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    perspective: 1000px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .envelope:active:not(.open) { transform: scale(0.98); }
+  .env-pocket {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #ffffff, #f9f9f7);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px -12px rgba(90,60,70,0.32), 0 3px 8px rgba(90,60,70,0.14);
+  }
+  /* ombrages latéraux : pointent exactement vers le centre (50% / 50%), comme les autres plis */
+  .env-side {
+    position: absolute;
+    top: 0;
+    width: 52%;
+    height: 100%;
+    background: #eef0ee;
+  }
+  .env-side-l { left: -1%; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+  .env-side-r { right: -1%; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+
+  /* la lettre reste dans son propre compartiment, avec une découpe qui ne
+     cache que le débordement du BAS (le rabat, lui, n'est jamais découpé,
+     pour que sa rotation 3D reste bien visible) */
+  .env-letter-slot {
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    bottom: 0;
+    top: -70%;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .env-letter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6%;
+    height: 62%;
+    transform-style: preserve-3d;
+    transform: translateY(0%);
+    opacity: 0;
+    transition: transform 0.75s cubic-bezier(.2,1,.3,1) 0.35s, opacity 0.25s ease 0.3s;
+  }
+  .env-letter-half {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, #ffffff, #fbfbfa);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    backface-visibility: hidden;
+  }
+  .env-letter-top {
+    top: 0;
+    border-radius: 8px 8px 0 0;
+    transform-origin: bottom center;
+    transform: rotateX(-178deg);
+    transition: transform 0.65s cubic-bezier(.3,1,.3,1) 1s;
+  }
+  .env-letter-bottom {
+    bottom: 0;
+    border-radius: 0 0 8px 8px;
+  }
+  /* pochette avant : cache le bas de la lettre, pointe elle aussi vers le centre exact */
+  .env-pocket-front {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    background: linear-gradient(160deg, #ffffff, #f9f9f7);
+    clip-path: polygon(0% 100%, 100% 100%, 50% 0%);
+    z-index: 3;
+    border-radius: 0 0 12px 12px;
+  }
+  /* rabat : pointe vers le centre exact (50% / 50%), jamais découpé par un overflow */
+  .env-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(160deg, #ffffff, #f6f6f4);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.8s cubic-bezier(.3,1,.3,1);
+    z-index: 4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+  /* le cœur est exactement au centre de l'enveloppe : là où tous les plis se rejoignent */
+  .env-seal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 54px;
+    height: 48px;
+    margin: -24px 0 0 -27px;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    z-index: 5;
+  }
+  .env-seal::before,
+  .env-seal::after {
+    position: absolute;
+    content: '';
+    left: 27px;
+    top: 0;
+    width: 27px;
+    height: 43px;
+    background: radial-gradient(circle at 35% 30%, #e0605f, #8f1f1f 75%);
+    border-radius: 27px 27px 0 0;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  }
+  .env-seal::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+  }
+  /* ouverture : rotation NETTE (moins extrême, jamais proche de 180° pour
+     éviter les soucis d'affichage de la face arrière) + léger décalage vers
+     le haut, pour que le mouvement soit toujours bien visible */
+  .envelope.open .env-flap { transform: rotateX(-125deg) translateY(-4%); z-index: 1; }
+  .envelope.open .env-seal { transform: scale(0.2) rotate(30deg); opacity: 0; }
+  .envelope.open .env-letter { transform: translateY(-68%); opacity: 1; }
+  .envelope.open .env-letter-top { transform: rotateX(0deg); }
+
+  .env-hint {
+    position: relative;
+    z-index: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    animation: envHintPulse 2.2s ease-in-out infinite;
+  }
+  .env-hint.hidden { display: none; }
+  @keyframes envHintPulse { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+  .letter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(58, 46, 51, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .letter-overlay.show {
+    display: flex;
+    animation: overlayIn 0.25s ease-out both;
+  }
+  @keyframes overlayIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .letter-paper {
+    position: relative;
+    max-width: 380px;
+    width: 100%;
+    max-height: 80dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #FFFDF8;
+    border: 2px solid var(--coral);
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.35);
+    animation: letterIn 0.4s cubic-bezier(.2,1.2,.3,1) both;
+  }
+  .letter-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 240px;
+    height: 240px;
+    transform: translate(-50%, -50%);
+    fill: var(--coral-deep);
+    opacity: 0.07;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes letterIn {
+    0% { opacity: 0; transform: scale(0.9) rotate(-2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .letter-text {
+    position: relative;
+    z-index: 1;
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    line-height: 1.5;
+    color: #4A3A3F;
+    white-space: pre-line;
+  }
+  .letter-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    background: var(--peach);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--ink);
+    z-index: 2;
+  }
+
+  @media (max-width: 380px) {
+    .page-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+  <div class="fleur-bg" id="fleurBg"></div>
+  <a class="back-link" href="index.html">← Retour</a>
+
+  <p class="page-eyebrow">Pour toi</p>
+  <h1 class="page-title">Installe toi bien ✨</h1>
+
+  <div class="envelope-zone">
+    <button class="envelope" id="envelopeBtn" aria-label="Ouvrir la lettre">
+      <div class="env-pocket"></div>
+      <div class="env-side env-side-l"></div>
+      <div class="env-side env-side-r"></div>
+      <div class="env-letter-slot">
+        <div class="env-letter" id="envLetter">
+          <div class="env-letter-half env-letter-bottom"></div>
+          <div class="env-letter-half env-letter-top"></div>
+        </div>
+      </div>
+      <div class="env-pocket-front"></div>
+      <div class="env-flap" id="envFlap"></div>
+      <div class="env-seal"></div>
+    </button>
+    <p class="env-hint" id="envHint">Touche l'enveloppe pour l'ouvrir 💌</p>
+  </div>
+
+  <div class="letter-overlay" id="letterOverlay">
+    <div class="letter-paper">
+      <button class="letter-close" id="letterClose">✕</button>
+      <svg class="letter-watermark" viewBox="0 0 24 24" aria-hidden><path id="letterWatermarkPath" d=""/></svg>
+      <p class="letter-text" id="letterText"></p>
+    </div>
+  </div>
+
+  <script>
+    // Le fond
+    const FLEUR_PATH =
+      'M12 2S9 4 9 7 11 12 11 16H10S10 14 9 12C7 8 3 10 3 13S5 16 5 16C5 13 8.5 13 8.5 16H7V18H10.5L9 20S10 21 11 20L12 22L13 20C14 21 15 20 15 20L13.5 18H17V16H15.5C15.5 13 19 13 19 16C19 16 21 16 21 13S17 8 15 12C14 14 14 16 14 16H13C13 12 15 10 15 7S12 2 12 2Z';
+
+    (function fillFleurBackground() {
+      const container = document.getElementById('fleurBg');
+      const cols = Math.ceil(window.innerWidth / 104) + 1;
+      const rows = Math.ceil(window.innerHeight / 60) + 1;
+      const count = cols * rows;
+      const svgNS = 'http://www.w3.org/2000/svg';
+      for (let i = 0; i < count; i++) {
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        const path = document.createElementNS(svgNS, 'path');
+        path.setAttribute('d', FLEUR_PATH);
+        svg.appendChild(path);
+        container.appendChild(svg);
+      }
+    })();
+
+    // La lettre -- CLAUDE NE TOUCHE A RIEN 
+    const LETTER_TEXT = `Aéla,
+
+Je voulais tout d'abord que tu saches que je t'apprécie énormément, tu es l'une de mes meilleures rencontres, si ce n'est la meilleure de cette année. 
+Entre ta joie de vivre, ta gentillesse, ton sourire, ton humour, tes yeux, je retrouve quelque chose de perdu hélas, aujourd'hui : une âme pure méritant tout le bonheur du monde.
+
+C'est pourquoi, sachant que tu stresses pour cette année, pour ta vie en général, je souhaite te rappeler à quel point tu comptes pour moi et que je serai là pour te soutenir dans les moments les plus durs, ainsi que pour célébrer les moments les plus joyeux, aussi bien moralement que par ma présence.
+
+Tu n'as pas besoin d'être parfaite, ni tout le temps forte. Sois toi-même, et surtout aie confiance en toi, c'est dur, je le conçois. Mais les malheurs qui te sont arrivés ne définissent pas ta valeur. Unique et exemplaire, n'aie pas peur de donner de la voix et de montrer qui tu es et surtout ne crains pas le jugement des autres, il n'en vaut pas la peine.
+
+On se connaît depuis un mois seulement, mais notre ressemblance, évidemment pas physique, mais mentale, est frappante. J'ai hâte de continuer à te découvrir et de te revoir, dès que possible, à Paris. 
+
+Prends soin de toi Aéla. 
+
+Nolann 💐`;
+
+    document.getElementById('letterWatermarkPath').setAttribute('d', FLEUR_PATH);
+
+    document.getElementById('letterText').textContent = LETTER_TEXT;
+
+    const envelopeBtn = document.getElementById('envelopeBtn');
+    const envHint = document.getElementById('envHint');
+    const letterOverlay = document.getElementById('letterOverlay');
+
+    function closeLetter() {
+      letterOverlay.classList.remove('show');
+      // l'enveloppe se referme (le rabat, le cachet et le coin de la lettre
+      // reviennent à leur état de départ) quand on quitte le message.
+      envelopeBtn.classList.remove('open');
+      envHint.classList.remove('hidden');
+    }
+
+    envelopeBtn.addEventListener('click', function () {
+      if (this.classList.contains('open')) {
+        letterOverlay.classList.add('show');
+        return;
+      }
+      this.classList.add('open');
+      envHint.classList.add('hidden');
+      setTimeout(function () {
+        letterOverlay.classList.add('show');
+      }, 1800);
+    });
+
+    document.getElementById('letterClose').addEventListener('click', closeLetter);
+    letterOverlay.addEventListener('click', function (e) {
+      if (e.target === this) closeLetter();
+    });
+  </script>
+</body>
+</html>
